@@ -40,7 +40,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-leal = "0.0.19"
+leal = "0.0.20"
 ```
 
 Or install via cargo:
