@@ -1,0 +1,17 @@
+{
+  "cliVersion": "5.102.0",
+  "generatorName": "fernapi/fern-rust-sdk",
+  "generatorVersion": "0.46.2",
+  "generatorConfig": {
+    "crateName": "leal",
+    "clientClassName": "LealClient",
+    "packageDescription": "Rust client for the Leal loyalty API.",
+    "packageRepository": "https://github.com/lealhq/leal-rust-sdk",
+    "packageDocumentation": "https://www.getleal.com/developers/rust"
+  },
+  "originGitCommit": "79858519a5b20df3986fde6a58009acebe1a017d",
+  "originGitCommitIsDirty": false,
+  "invokedBy": "ci",
+  "ciProvider": "github",
+  "sdkVersion": "0.0.19"
+}
