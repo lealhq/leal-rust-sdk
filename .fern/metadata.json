@@ -9,9 +9,9 @@
     "packageRepository": "https://github.com/lealhq/leal-rust-sdk",
     "packageDocumentation": "https://www.getleal.com/developers/rust"
   },
-  "originGitCommit": "3e289a20d557b403d7e8ebd5310a542b0ba9e518",
+  "originGitCommit": "cded6e2ebf0bf136ad92a61cc2713b7355927189",
   "originGitCommitIsDirty": false,
   "invokedBy": "ci",
   "ciProvider": "github",
-  "sdkVersion": "0.0.22"
+  "sdkVersion": "0.0.23"
 }
