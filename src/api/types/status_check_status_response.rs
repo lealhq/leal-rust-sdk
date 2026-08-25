@@ -22,6 +22,8 @@ pub struct CheckStatusResponse {
     /// 'ok' while the API is serving requests
     #[serde(default)]
     pub status: String,
+    #[serde(default)]
+    pub versioning: CheckStatusResponseVersioning,
 }
 
 impl CheckStatusResponse {
@@ -40,6 +42,7 @@ pub struct CheckStatusResponseBuilder {
     openapi_url: Option<String>,
     rate_limit: Option<CheckStatusResponseRateLimit>,
     status: Option<String>,
+    versioning: Option<CheckStatusResponseVersioning>,
 }
 
 impl CheckStatusResponseBuilder {
@@ -78,6 +81,11 @@ impl CheckStatusResponseBuilder {
         self
     }
 
+    pub fn versioning(mut self, value: CheckStatusResponseVersioning) -> Self {
+        self.versioning = Some(value);
+        self
+    }
+
     /// Consumes the builder and constructs a [`CheckStatusResponse`].
     /// This method will fail if any of the following fields are not set:
     /// - [`api_version`](CheckStatusResponseBuilder::api_version)
@@ -87,6 +95,7 @@ impl CheckStatusResponseBuilder {
     /// - [`openapi_url`](CheckStatusResponseBuilder::openapi_url)
     /// - [`rate_limit`](CheckStatusResponseBuilder::rate_limit)
     /// - [`status`](CheckStatusResponseBuilder::status)
+    /// - [`versioning`](CheckStatusResponseBuilder::versioning)
     pub fn build(self) -> Result<CheckStatusResponse, BuildError> {
         Ok(CheckStatusResponse {
             api_version: self
@@ -110,6 +119,9 @@ impl CheckStatusResponseBuilder {
             status: self
                 .status
                 .ok_or_else(|| BuildError::missing_field("status"))?,
+            versioning: self
+                .versioning
+                .ok_or_else(|| BuildError::missing_field("versioning"))?,
         })
     }
 }

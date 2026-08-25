@@ -9,6 +9,12 @@ pub enum ApiError {
         error: Option<String>,
         errors: Option<ErrorErrors>,
     },
+    #[error("GoneError: {message}")]
+    GoneError {
+        message: String,
+        error: Option<String>,
+        errors: Option<ErrorErrors>,
+    },
     #[error("TooManyRequestsError: Rate limit exceeded - {message}")]
     TooManyRequestsError {
         message: String,
@@ -72,6 +78,31 @@ impl ApiError {
                     }
                 }
                 return Self::UnauthorizedError {
+                    message: body.unwrap_or("Unknown error").to_string(),
+                    error: None,
+                    errors: None,
+                };
+            }
+            410 => {
+                // Parse error body for GoneError;
+                if let Some(body_str) = body {
+                    if let Ok(parsed) = serde_json::from_str::<serde_json::Value>(body_str) {
+                        return Self::GoneError {
+                            message: parsed
+                                .get("message")
+                                .and_then(|v| v.as_str())
+                                .unwrap_or("Unknown error")
+                                .to_string(),
+                            error: parsed
+                                .get("error")
+                                .and_then(|v| v.as_str().map(|s| s.to_string())),
+                            errors: parsed.get("errors").and_then(|v| {
+                                serde_json::from_value::<ErrorErrors>(v.clone()).ok()
+                            }),
+                        };
+                    }
+                }
+                return Self::GoneError {
                     message: body.unwrap_or("Unknown error").to_string(),
                     error: None,
                     errors: None,
