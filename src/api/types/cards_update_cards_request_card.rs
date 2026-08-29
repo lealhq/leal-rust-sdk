@@ -2,9 +2,15 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct UpdateCardsRequestCard {
+    /// Up to two extra front-of-pass fields. Blank values are ignored.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub auxiliary_fields: Option<Vec<String>>,
     /// Hex colour for the card background
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_color: Option<String>,
+    /// Card expiry timestamp (ISO 8601)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<String>,
     /// Optional header text displayed on the card
     #[serde(skip_serializing_if = "Option::is_none")]
     pub header_text: Option<String>,
@@ -14,6 +20,12 @@ pub struct UpdateCardsRequestCard {
     /// Card name
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Whether wallet passes show the member name field
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub show_member_field: Option<bool>,
+    /// Whether wallet passes show the stamps-to-reward field
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub show_stamps_to_reward_field: Option<bool>,
     /// Hex colour for stamp backgrounds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stamp_background_color: Option<String>,
@@ -49,10 +61,14 @@ impl UpdateCardsRequestCard {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct UpdateCardsRequestCardBuilder {
+    auxiliary_fields: Option<Vec<String>>,
     card_color: Option<String>,
+    expires_at: Option<String>,
     header_text: Option<String>,
     initial_stamps: Option<i64>,
     name: Option<String>,
+    show_member_field: Option<bool>,
+    show_stamps_to_reward_field: Option<bool>,
     stamp_background_color: Option<String>,
     stamp_color: Option<String>,
     stamp_icon: Option<String>,
@@ -64,8 +80,18 @@ pub struct UpdateCardsRequestCardBuilder {
 }
 
 impl UpdateCardsRequestCardBuilder {
+    pub fn auxiliary_fields(mut self, value: Vec<String>) -> Self {
+        self.auxiliary_fields = Some(value);
+        self
+    }
+
     pub fn card_color(mut self, value: impl Into<String>) -> Self {
         self.card_color = Some(value.into());
+        self
+    }
+
+    pub fn expires_at(mut self, value: impl Into<String>) -> Self {
+        self.expires_at = Some(value.into());
         self
     }
 
@@ -81,6 +107,16 @@ impl UpdateCardsRequestCardBuilder {
 
     pub fn name(mut self, value: impl Into<String>) -> Self {
         self.name = Some(value.into());
+        self
+    }
+
+    pub fn show_member_field(mut self, value: bool) -> Self {
+        self.show_member_field = Some(value);
+        self
+    }
+
+    pub fn show_stamps_to_reward_field(mut self, value: bool) -> Self {
+        self.show_stamps_to_reward_field = Some(value);
         self
     }
 
@@ -127,10 +163,14 @@ impl UpdateCardsRequestCardBuilder {
     /// Consumes the builder and constructs a [`UpdateCardsRequestCard`].
     pub fn build(self) -> Result<UpdateCardsRequestCard, BuildError> {
         Ok(UpdateCardsRequestCard {
+            auxiliary_fields: self.auxiliary_fields,
             card_color: self.card_color,
+            expires_at: self.expires_at,
             header_text: self.header_text,
             initial_stamps: self.initial_stamps,
             name: self.name,
+            show_member_field: self.show_member_field,
+            show_stamps_to_reward_field: self.show_stamps_to_reward_field,
             stamp_background_color: self.stamp_background_color,
             stamp_color: self.stamp_color,
             stamp_icon: self.stamp_icon,

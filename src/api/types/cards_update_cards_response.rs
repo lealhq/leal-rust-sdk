@@ -5,6 +5,9 @@ pub struct UpdateCardsResponse {
     /// ISO 8601 timestamp when the card was archived, or null if active
     #[serde(default)]
     pub archived_at: String,
+    /// Up to two extra front-of-pass fields
+    #[serde(default)]
+    pub auxiliary_fields: Vec<String>,
     /// Hex colour for the card background (e.g. '#6B4226')
     #[serde(default)]
     pub card_color: String,
@@ -14,6 +17,9 @@ pub struct UpdateCardsResponse {
     /// Number of customer card instances issued
     #[serde(default)]
     pub customer_cards_count: i64,
+    /// ISO 8601 timestamp when the card expires, or null if it does not expire
+    #[serde(default)]
+    pub expires_at: String,
     /// Optional header text displayed on the card
     #[serde(default)]
     pub header_text: String,
@@ -29,6 +35,12 @@ pub struct UpdateCardsResponse {
     /// Number of rewards defined for this card
     #[serde(default)]
     pub rewards_count: i64,
+    /// Whether wallet passes show the member name field
+    #[serde(default)]
+    pub show_member_field: bool,
+    /// Whether wallet passes show the stamps-to-reward field
+    #[serde(default)]
+    pub show_stamps_to_reward_field: bool,
     /// Hex colour for stamp backgrounds
     #[serde(default)]
     pub stamp_background_color: String,
@@ -68,14 +80,18 @@ impl UpdateCardsResponse {
 #[non_exhaustive]
 pub struct UpdateCardsResponseBuilder {
     archived_at: Option<String>,
+    auxiliary_fields: Option<Vec<String>>,
     card_color: Option<String>,
     created_at: Option<String>,
     customer_cards_count: Option<i64>,
+    expires_at: Option<String>,
     header_text: Option<String>,
     id: Option<i64>,
     initial_stamps: Option<i64>,
     name: Option<String>,
     rewards_count: Option<i64>,
+    show_member_field: Option<bool>,
+    show_stamps_to_reward_field: Option<bool>,
     stamp_background_color: Option<String>,
     stamp_color: Option<String>,
     stamp_icon: Option<String>,
@@ -93,6 +109,11 @@ impl UpdateCardsResponseBuilder {
         self
     }
 
+    pub fn auxiliary_fields(mut self, value: Vec<String>) -> Self {
+        self.auxiliary_fields = Some(value);
+        self
+    }
+
     pub fn card_color(mut self, value: impl Into<String>) -> Self {
         self.card_color = Some(value.into());
         self
@@ -105,6 +126,11 @@ impl UpdateCardsResponseBuilder {
 
     pub fn customer_cards_count(mut self, value: i64) -> Self {
         self.customer_cards_count = Some(value);
+        self
+    }
+
+    pub fn expires_at(mut self, value: impl Into<String>) -> Self {
+        self.expires_at = Some(value.into());
         self
     }
 
@@ -130,6 +156,16 @@ impl UpdateCardsResponseBuilder {
 
     pub fn rewards_count(mut self, value: i64) -> Self {
         self.rewards_count = Some(value);
+        self
+    }
+
+    pub fn show_member_field(mut self, value: bool) -> Self {
+        self.show_member_field = Some(value);
+        self
+    }
+
+    pub fn show_stamps_to_reward_field(mut self, value: bool) -> Self {
+        self.show_stamps_to_reward_field = Some(value);
         self
     }
 
@@ -181,14 +217,18 @@ impl UpdateCardsResponseBuilder {
     /// Consumes the builder and constructs a [`UpdateCardsResponse`].
     /// This method will fail if any of the following fields are not set:
     /// - [`archived_at`](UpdateCardsResponseBuilder::archived_at)
+    /// - [`auxiliary_fields`](UpdateCardsResponseBuilder::auxiliary_fields)
     /// - [`card_color`](UpdateCardsResponseBuilder::card_color)
     /// - [`created_at`](UpdateCardsResponseBuilder::created_at)
     /// - [`customer_cards_count`](UpdateCardsResponseBuilder::customer_cards_count)
+    /// - [`expires_at`](UpdateCardsResponseBuilder::expires_at)
     /// - [`header_text`](UpdateCardsResponseBuilder::header_text)
     /// - [`id`](UpdateCardsResponseBuilder::id)
     /// - [`initial_stamps`](UpdateCardsResponseBuilder::initial_stamps)
     /// - [`name`](UpdateCardsResponseBuilder::name)
     /// - [`rewards_count`](UpdateCardsResponseBuilder::rewards_count)
+    /// - [`show_member_field`](UpdateCardsResponseBuilder::show_member_field)
+    /// - [`show_stamps_to_reward_field`](UpdateCardsResponseBuilder::show_stamps_to_reward_field)
     /// - [`stamp_background_color`](UpdateCardsResponseBuilder::stamp_background_color)
     /// - [`stamp_color`](UpdateCardsResponseBuilder::stamp_color)
     /// - [`stamp_icon`](UpdateCardsResponseBuilder::stamp_icon)
@@ -203,6 +243,9 @@ impl UpdateCardsResponseBuilder {
             archived_at: self
                 .archived_at
                 .ok_or_else(|| BuildError::missing_field("archived_at"))?,
+            auxiliary_fields: self
+                .auxiliary_fields
+                .ok_or_else(|| BuildError::missing_field("auxiliary_fields"))?,
             card_color: self
                 .card_color
                 .ok_or_else(|| BuildError::missing_field("card_color"))?,
@@ -212,6 +255,9 @@ impl UpdateCardsResponseBuilder {
             customer_cards_count: self
                 .customer_cards_count
                 .ok_or_else(|| BuildError::missing_field("customer_cards_count"))?,
+            expires_at: self
+                .expires_at
+                .ok_or_else(|| BuildError::missing_field("expires_at"))?,
             header_text: self
                 .header_text
                 .ok_or_else(|| BuildError::missing_field("header_text"))?,
@@ -223,6 +269,12 @@ impl UpdateCardsResponseBuilder {
             rewards_count: self
                 .rewards_count
                 .ok_or_else(|| BuildError::missing_field("rewards_count"))?,
+            show_member_field: self
+                .show_member_field
+                .ok_or_else(|| BuildError::missing_field("show_member_field"))?,
+            show_stamps_to_reward_field: self
+                .show_stamps_to_reward_field
+                .ok_or_else(|| BuildError::missing_field("show_stamps_to_reward_field"))?,
             stamp_background_color: self
                 .stamp_background_color
                 .ok_or_else(|| BuildError::missing_field("stamp_background_color"))?,

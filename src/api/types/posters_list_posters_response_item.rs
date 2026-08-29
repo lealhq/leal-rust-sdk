@@ -1,6 +1,6 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct ListPostersResponseItem {
     /// Parent store ID
     #[serde(default)]
@@ -11,6 +11,15 @@ pub struct ListPostersResponseItem {
     /// Loyalty card customers are signed up to
     #[serde(default)]
     pub card_id: i64,
+    /// Whether the public signup form collects email
+    #[serde(default)]
+    pub collect_email: bool,
+    /// Whether the public signup form collects phone number
+    #[serde(default)]
+    pub collect_phone: bool,
+    /// Which contact fields appear on the public signup form: 'email_and_phone', 'email_only', or 'phone_only'
+    #[serde(default)]
+    pub contact_collection_mode: String,
     /// ISO 8601 creation timestamp
     #[serde(default)]
     pub created_at: String,
@@ -20,6 +29,10 @@ pub struct ListPostersResponseItem {
     /// Unique poster ID
     #[serde(default)]
     pub id: i64,
+    /// Minimum customer age required for signup
+    #[serde(default)]
+    #[serde(with = "crate::core::number_serializers")]
+    pub minimum_age: f64,
     /// Paper size the poster is laid out for
     #[serde(default)]
     pub paper_size: String,
@@ -29,6 +42,15 @@ pub struct ListPostersResponseItem {
     /// URL encoded in the QR code
     #[serde(default)]
     pub qr_code_url: String,
+    /// Whether date of birth is required on the public signup form
+    #[serde(default)]
+    pub require_birthday: bool,
+    /// Whether email is required when it is collected
+    #[serde(default)]
+    pub require_email: bool,
+    /// Whether phone number is required when it is collected
+    #[serde(default)]
+    pub require_phone: bool,
     /// Hex accent colour
     #[serde(default)]
     pub secondary_color: String,
@@ -58,12 +80,19 @@ pub struct ListPostersResponseItemBuilder {
     account_id: Option<i64>,
     active: Option<bool>,
     card_id: Option<i64>,
+    collect_email: Option<bool>,
+    collect_phone: Option<bool>,
+    contact_collection_mode: Option<String>,
     created_at: Option<String>,
     display_url: Option<String>,
     id: Option<i64>,
+    minimum_age: Option<f64>,
     paper_size: Option<String>,
     primary_color: Option<String>,
     qr_code_url: Option<String>,
+    require_birthday: Option<bool>,
+    require_email: Option<bool>,
+    require_phone: Option<bool>,
     secondary_color: Option<String>,
     signup_url: Option<String>,
     text_color: Option<String>,
@@ -87,6 +116,21 @@ impl ListPostersResponseItemBuilder {
         self
     }
 
+    pub fn collect_email(mut self, value: bool) -> Self {
+        self.collect_email = Some(value);
+        self
+    }
+
+    pub fn collect_phone(mut self, value: bool) -> Self {
+        self.collect_phone = Some(value);
+        self
+    }
+
+    pub fn contact_collection_mode(mut self, value: impl Into<String>) -> Self {
+        self.contact_collection_mode = Some(value.into());
+        self
+    }
+
     pub fn created_at(mut self, value: impl Into<String>) -> Self {
         self.created_at = Some(value.into());
         self
@@ -102,6 +146,11 @@ impl ListPostersResponseItemBuilder {
         self
     }
 
+    pub fn minimum_age(mut self, value: f64) -> Self {
+        self.minimum_age = Some(value);
+        self
+    }
+
     pub fn paper_size(mut self, value: impl Into<String>) -> Self {
         self.paper_size = Some(value.into());
         self
@@ -114,6 +163,21 @@ impl ListPostersResponseItemBuilder {
 
     pub fn qr_code_url(mut self, value: impl Into<String>) -> Self {
         self.qr_code_url = Some(value.into());
+        self
+    }
+
+    pub fn require_birthday(mut self, value: bool) -> Self {
+        self.require_birthday = Some(value);
+        self
+    }
+
+    pub fn require_email(mut self, value: bool) -> Self {
+        self.require_email = Some(value);
+        self
+    }
+
+    pub fn require_phone(mut self, value: bool) -> Self {
+        self.require_phone = Some(value);
         self
     }
 
@@ -147,12 +211,19 @@ impl ListPostersResponseItemBuilder {
     /// - [`account_id`](ListPostersResponseItemBuilder::account_id)
     /// - [`active`](ListPostersResponseItemBuilder::active)
     /// - [`card_id`](ListPostersResponseItemBuilder::card_id)
+    /// - [`collect_email`](ListPostersResponseItemBuilder::collect_email)
+    /// - [`collect_phone`](ListPostersResponseItemBuilder::collect_phone)
+    /// - [`contact_collection_mode`](ListPostersResponseItemBuilder::contact_collection_mode)
     /// - [`created_at`](ListPostersResponseItemBuilder::created_at)
     /// - [`display_url`](ListPostersResponseItemBuilder::display_url)
     /// - [`id`](ListPostersResponseItemBuilder::id)
+    /// - [`minimum_age`](ListPostersResponseItemBuilder::minimum_age)
     /// - [`paper_size`](ListPostersResponseItemBuilder::paper_size)
     /// - [`primary_color`](ListPostersResponseItemBuilder::primary_color)
     /// - [`qr_code_url`](ListPostersResponseItemBuilder::qr_code_url)
+    /// - [`require_birthday`](ListPostersResponseItemBuilder::require_birthday)
+    /// - [`require_email`](ListPostersResponseItemBuilder::require_email)
+    /// - [`require_phone`](ListPostersResponseItemBuilder::require_phone)
     /// - [`secondary_color`](ListPostersResponseItemBuilder::secondary_color)
     /// - [`signup_url`](ListPostersResponseItemBuilder::signup_url)
     /// - [`text_color`](ListPostersResponseItemBuilder::text_color)
@@ -169,6 +240,15 @@ impl ListPostersResponseItemBuilder {
             card_id: self
                 .card_id
                 .ok_or_else(|| BuildError::missing_field("card_id"))?,
+            collect_email: self
+                .collect_email
+                .ok_or_else(|| BuildError::missing_field("collect_email"))?,
+            collect_phone: self
+                .collect_phone
+                .ok_or_else(|| BuildError::missing_field("collect_phone"))?,
+            contact_collection_mode: self
+                .contact_collection_mode
+                .ok_or_else(|| BuildError::missing_field("contact_collection_mode"))?,
             created_at: self
                 .created_at
                 .ok_or_else(|| BuildError::missing_field("created_at"))?,
@@ -176,6 +256,9 @@ impl ListPostersResponseItemBuilder {
                 .display_url
                 .ok_or_else(|| BuildError::missing_field("display_url"))?,
             id: self.id.ok_or_else(|| BuildError::missing_field("id"))?,
+            minimum_age: self
+                .minimum_age
+                .ok_or_else(|| BuildError::missing_field("minimum_age"))?,
             paper_size: self
                 .paper_size
                 .ok_or_else(|| BuildError::missing_field("paper_size"))?,
@@ -185,6 +268,15 @@ impl ListPostersResponseItemBuilder {
             qr_code_url: self
                 .qr_code_url
                 .ok_or_else(|| BuildError::missing_field("qr_code_url"))?,
+            require_birthday: self
+                .require_birthday
+                .ok_or_else(|| BuildError::missing_field("require_birthday"))?,
+            require_email: self
+                .require_email
+                .ok_or_else(|| BuildError::missing_field("require_email"))?,
+            require_phone: self
+                .require_phone
+                .ok_or_else(|| BuildError::missing_field("require_phone"))?,
             secondary_color: self
                 .secondary_color
                 .ok_or_else(|| BuildError::missing_field("secondary_color"))?,

@@ -1,16 +1,33 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct UpdatePostersRequestPoster {
     /// Whether the poster is active
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
+    /// Which contact fields appear on the public signup form
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub contact_collection_mode: Option<String>,
+    /// Minimum customer age required for signup. Requires require_birthday to be true.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
+    #[serde(with = "crate::core::number_serializers::option")]
+    pub minimum_age: Option<f64>,
     /// Print size – one of: a4, a5, a6, letter
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paper_size: Option<String>,
     /// Primary brand color as a hex string
     #[serde(skip_serializing_if = "Option::is_none")]
     pub primary_color: Option<String>,
+    /// Whether date of birth is required on the public signup form
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_birthday: Option<bool>,
+    /// Whether email is required when it is collected
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_email: Option<bool>,
+    /// Whether phone number is required when it is collected
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_phone: Option<bool>,
     /// Secondary brand color as a hex string
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secondary_color: Option<String>,
@@ -32,8 +49,13 @@ impl UpdatePostersRequestPoster {
 #[non_exhaustive]
 pub struct UpdatePostersRequestPosterBuilder {
     active: Option<bool>,
+    contact_collection_mode: Option<String>,
+    minimum_age: Option<f64>,
     paper_size: Option<String>,
     primary_color: Option<String>,
+    require_birthday: Option<bool>,
+    require_email: Option<bool>,
+    require_phone: Option<bool>,
     secondary_color: Option<String>,
     text_color: Option<String>,
     title: Option<String>,
@@ -45,6 +67,16 @@ impl UpdatePostersRequestPosterBuilder {
         self
     }
 
+    pub fn contact_collection_mode(mut self, value: impl Into<String>) -> Self {
+        self.contact_collection_mode = Some(value.into());
+        self
+    }
+
+    pub fn minimum_age(mut self, value: f64) -> Self {
+        self.minimum_age = Some(value);
+        self
+    }
+
     pub fn paper_size(mut self, value: impl Into<String>) -> Self {
         self.paper_size = Some(value.into());
         self
@@ -52,6 +84,21 @@ impl UpdatePostersRequestPosterBuilder {
 
     pub fn primary_color(mut self, value: impl Into<String>) -> Self {
         self.primary_color = Some(value.into());
+        self
+    }
+
+    pub fn require_birthday(mut self, value: bool) -> Self {
+        self.require_birthday = Some(value);
+        self
+    }
+
+    pub fn require_email(mut self, value: bool) -> Self {
+        self.require_email = Some(value);
+        self
+    }
+
+    pub fn require_phone(mut self, value: bool) -> Self {
+        self.require_phone = Some(value);
         self
     }
 
@@ -74,8 +121,13 @@ impl UpdatePostersRequestPosterBuilder {
     pub fn build(self) -> Result<UpdatePostersRequestPoster, BuildError> {
         Ok(UpdatePostersRequestPoster {
             active: self.active,
+            contact_collection_mode: self.contact_collection_mode,
+            minimum_age: self.minimum_age,
             paper_size: self.paper_size,
             primary_color: self.primary_color,
+            require_birthday: self.require_birthday,
+            require_email: self.require_email,
+            require_phone: self.require_phone,
             secondary_color: self.secondary_color,
             text_color: self.text_color,
             title: self.title,
