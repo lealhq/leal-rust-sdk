@@ -1,6 +1,6 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct UpdateCardsResponse {
     /// ISO 8601 timestamp when the card was archived, or null if active
     #[serde(default)]
@@ -56,6 +56,10 @@ pub struct UpdateCardsResponse {
     /// Hex colour for the strip (when strip_type is 'color')
     #[serde(default)]
     pub strip_color: String,
+    /// Opacity (0–100) of the strip background over the card colour, for a colour, an uploaded image or a preset alike. 100 renders the colour or image exactly as supplied; lower values let the card colour show through
+    #[serde(default)]
+    #[serde(with = "crate::core::number_serializers")]
+    pub strip_opacity: f64,
     /// Preset strip image identifier (when strip_type is 'preset')
     #[serde(default)]
     pub strip_preset: String,
@@ -97,6 +101,7 @@ pub struct UpdateCardsResponseBuilder {
     stamp_icon: Option<String>,
     stamps_required: Option<i64>,
     strip_color: Option<String>,
+    strip_opacity: Option<f64>,
     strip_preset: Option<String>,
     strip_type: Option<String>,
     text_color: Option<String>,
@@ -194,6 +199,11 @@ impl UpdateCardsResponseBuilder {
         self
     }
 
+    pub fn strip_opacity(mut self, value: f64) -> Self {
+        self.strip_opacity = Some(value);
+        self
+    }
+
     pub fn strip_preset(mut self, value: impl Into<String>) -> Self {
         self.strip_preset = Some(value.into());
         self
@@ -234,6 +244,7 @@ impl UpdateCardsResponseBuilder {
     /// - [`stamp_icon`](UpdateCardsResponseBuilder::stamp_icon)
     /// - [`stamps_required`](UpdateCardsResponseBuilder::stamps_required)
     /// - [`strip_color`](UpdateCardsResponseBuilder::strip_color)
+    /// - [`strip_opacity`](UpdateCardsResponseBuilder::strip_opacity)
     /// - [`strip_preset`](UpdateCardsResponseBuilder::strip_preset)
     /// - [`strip_type`](UpdateCardsResponseBuilder::strip_type)
     /// - [`text_color`](UpdateCardsResponseBuilder::text_color)
@@ -290,6 +301,9 @@ impl UpdateCardsResponseBuilder {
             strip_color: self
                 .strip_color
                 .ok_or_else(|| BuildError::missing_field("strip_color"))?,
+            strip_opacity: self
+                .strip_opacity
+                .ok_or_else(|| BuildError::missing_field("strip_opacity"))?,
             strip_preset: self
                 .strip_preset
                 .ok_or_else(|| BuildError::missing_field("strip_preset"))?,

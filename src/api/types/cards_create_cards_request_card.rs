@@ -1,6 +1,6 @@
 pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct CreateCardsRequestCard {
     /// Up to two extra front-of-pass fields. Blank values are ignored.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -41,6 +41,11 @@ pub struct CreateCardsRequestCard {
     /// Hex colour for the strip (used when strip_type is 'color')
     #[serde(skip_serializing_if = "Option::is_none")]
     pub strip_color: Option<String>,
+    /// Opacity (0–100) of the strip background over the card colour. Defaults to 100, which renders the colour or image exactly as supplied
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
+    #[serde(with = "crate::core::number_serializers::option")]
+    pub strip_opacity: Option<f64>,
     /// Preset strip image identifier (used when strip_type is 'preset')
     #[serde(skip_serializing_if = "Option::is_none")]
     pub strip_preset: Option<String>,
@@ -74,6 +79,7 @@ pub struct CreateCardsRequestCardBuilder {
     stamp_icon: Option<String>,
     stamps_required: Option<i64>,
     strip_color: Option<String>,
+    strip_opacity: Option<f64>,
     strip_preset: Option<String>,
     strip_type: Option<String>,
     text_color: Option<String>,
@@ -145,6 +151,11 @@ impl CreateCardsRequestCardBuilder {
         self
     }
 
+    pub fn strip_opacity(mut self, value: f64) -> Self {
+        self.strip_opacity = Some(value);
+        self
+    }
+
     pub fn strip_preset(mut self, value: impl Into<String>) -> Self {
         self.strip_preset = Some(value.into());
         self
@@ -178,6 +189,7 @@ impl CreateCardsRequestCardBuilder {
             stamp_icon: self.stamp_icon,
             stamps_required: self.stamps_required,
             strip_color: self.strip_color,
+            strip_opacity: self.strip_opacity,
             strip_preset: self.strip_preset,
             strip_type: self.strip_type,
             text_color: self.text_color,
