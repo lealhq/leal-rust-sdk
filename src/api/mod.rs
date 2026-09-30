@@ -13,6 +13,6 @@ pub mod types;
 
 pub use resources::{
     CardsClient, CustomerCardsClient, CustomersClient, LealClient, LocationsClient, PostersClient,
-    RewardsClient, StatusClient, StoresClient,
+    RewardsClient, StatusClient, StoresClient, WebhookSubscriptionsClient,
 };
 pub use types::*;

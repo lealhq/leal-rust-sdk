@@ -2501,6 +2501,649 @@ async fn main() {
 </dl>
 </details>
 
+## Webhook Subscriptions
+<details><summary><code>client.webhook_subscriptions.<a href="/src/api/resources/webhook_subscriptions/client.rs">get_api_v1accounts_account_id_webhook_subscriptions</a>(account_id: i64, event: Option&lt;Option&lt;String&gt;&gt;) -> Result&lt;Vec&lt;GetApiV1AccountsAccountIdWebhookSubscriptionsResponseItem&gt;, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns every webhook subscription for the store, oldest first. Signing secrets are not included; fetch a single subscription to read its secret.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use leal::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        token: Some("<token>".to_string()),
+        ..Default::default()
+    };
+    let client = LealClient::new(config).expect("Failed to build client");
+    client
+        .webhook_subscriptions
+        .get_api_v1accounts_account_id_webhook_subscriptions(
+            1,
+            &GetAPIV1AccountsAccountIDWebhookSubscriptionsQueryRequest {
+                ..Default::default()
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**account_id:** `i64` — Store (account) ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**event:** `Option<String>` — Only return subscriptions that list this event (or `*`)
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhook_subscriptions.<a href="/src/api/resources/webhook_subscriptions/client.rs">post_api_v1accounts_account_id_webhook_subscriptions</a>(account_id: i64, request: PostApiV1AccountsAccountIdWebhookSubscriptionsRequest) -> Result&lt;PostApiV1AccountsAccountIdWebhookSubscriptionsResponse, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Subscribes a URL to one or more events. The response includes the signing `secret`; store it to
+verify deliveries. The URL must be publicly reachable over https.
+
+Events: `customer.created`, `customer.updated`, `customer_card.created`, `stamp.earned`, `stamp.removed`, `reward.unlocked`, `reward.redeemed`, or `*` for all of them.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use leal::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        token: Some("<token>".to_string()),
+        ..Default::default()
+    };
+    let client = LealClient::new(config).expect("Failed to build client");
+    client
+        .webhook_subscriptions
+        .post_api_v1accounts_account_id_webhook_subscriptions(
+            1,
+            &PostAPIV1AccountsAccountIDWebhookSubscriptionsRequest {
+                target_url: "target_url".to_string(),
+                description: None,
+                enabled: None,
+                event: None,
+                events: None,
+                payload_format: None,
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**account_id:** `i64` — Store (account) ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `Option<String>` — Your own label, up to 255 characters
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**enabled:** `Option<bool>` — Create the subscription disabled by passing false (defaults to true)
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**event:** `Option<String>` — A single event to subscribe to. Same as `events` with one entry
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**events:** `Option<Vec<String>>` — Events to subscribe to, or `["*"]` for every event. Required unless `event` is given
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**payload_format:** `Option<String>` — `envelope` (default) or `flat`. `flat` sends the bare data object and cannot be combined with `*`
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**target_url:** `String` — Public https URL that will receive the POST requests
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhook_subscriptions.<a href="/src/api/resources/webhook_subscriptions/client.rs">get_api_v1accounts_account_id_webhook_subscriptions_id</a>(account_id: i64, id: i64) -> Result&lt;GetApiV1AccountsAccountIdWebhookSubscriptionsIdResponse, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns a single subscription, including its signing secret and the result of the most recent delivery.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use leal::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        token: Some("<token>".to_string()),
+        ..Default::default()
+    };
+    let client = LealClient::new(config).expect("Failed to build client");
+    client
+        .webhook_subscriptions
+        .get_api_v1accounts_account_id_webhook_subscriptions_id(1, 1, None)
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**account_id:** `i64` — Store (account) ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**id:** `i64` — Webhook subscription ID
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhook_subscriptions.<a href="/src/api/resources/webhook_subscriptions/client.rs">delete_api_v1accounts_account_id_webhook_subscriptions_id</a>(account_id: i64, id: i64) -> Result&lt;(), ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Stops deliveries and deletes the subscription. This cannot be undone.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use leal::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        token: Some("<token>".to_string()),
+        ..Default::default()
+    };
+    let client = LealClient::new(config).expect("Failed to build client");
+    client
+        .webhook_subscriptions
+        .delete_api_v1accounts_account_id_webhook_subscriptions_id(1, 1, None)
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**account_id:** `i64` — Store (account) ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**id:** `i64` — Webhook subscription ID
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhook_subscriptions.<a href="/src/api/resources/webhook_subscriptions/client.rs">patch_api_v1accounts_account_id_webhook_subscriptions_id</a>(account_id: i64, id: i64, request: PatchApiV1AccountsAccountIdWebhookSubscriptionsIdRequest) -> Result&lt;PatchApiV1AccountsAccountIdWebhookSubscriptionsIdResponse, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Changes the URL, events, label or payload format, or turns the subscription off and on. Re-enabling a subscription that was disabled for failing clears its failure state.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use leal::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        token: Some("<token>".to_string()),
+        ..Default::default()
+    };
+    let client = LealClient::new(config).expect("Failed to build client");
+    client
+        .webhook_subscriptions
+        .patch_api_v1accounts_account_id_webhook_subscriptions_id(
+            1,
+            1,
+            &PatchAPIV1AccountsAccountIDWebhookSubscriptionsIDRequest {
+                ..Default::default()
+            },
+            None,
+        )
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**account_id:** `i64` — Store (account) ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**id:** `i64` — Webhook subscription ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `Option<String>` — Your own label, up to 255 characters
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**enabled:** `Option<bool>` — false to pause deliveries, true to resume them
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**event:** `Option<String>` — A single event. Same as `events` with one entry
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**events:** `Option<Vec<String>>` — Replaces the list of events, or `["*"]` for every event
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**payload_format:** `Option<String>` — `envelope` or `flat`
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**target_url:** `Option<String>` — Public https URL that will receive the POST requests
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhook_subscriptions.<a href="/src/api/resources/webhook_subscriptions/client.rs">post_api_v1accounts_account_id_webhook_subscriptions_id_rotate_secret</a>(account_id: i64, id: i64) -> Result&lt;PostApiV1AccountsAccountIdWebhookSubscriptionsIdRotateSecretResponse, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Replaces the subscription's signing secret. Deliveries are signed with the new secret straight away, so update your receiver at the same time.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use leal::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        token: Some("<token>".to_string()),
+        ..Default::default()
+    };
+    let client = LealClient::new(config).expect("Failed to build client");
+    client
+        .webhook_subscriptions
+        .post_api_v1accounts_account_id_webhook_subscriptions_id_rotate_secret(1, 1, None)
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**account_id:** `i64` — Store (account) ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**id:** `i64` — Webhook subscription ID
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.webhook_subscriptions.<a href="/src/api/resources/webhook_subscriptions/client.rs">post_api_v1accounts_account_id_webhook_subscriptions_id_test</a>(account_id: i64, id: i64) -> Result&lt;PostApiV1AccountsAccountIdWebhookSubscriptionsIdTestResponse, ApiError&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Immediately sends a signed `webhook.test` event to the subscription's URL and reports what
+happened, so you can check your endpoint and signature verification without waiting for real
+activity. Test events are not retried and do not count towards disabling the subscription.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```rust
+use leal::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let config = ClientConfig {
+        token: Some("<token>".to_string()),
+        ..Default::default()
+    };
+    let client = LealClient::new(config).expect("Failed to build client");
+    client
+        .webhook_subscriptions
+        .post_api_v1accounts_account_id_webhook_subscriptions_id_test(1, 1, None)
+        .await;
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**account_id:** `i64` — Store (account) ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**id:** `i64` — Webhook subscription ID
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Status
 <details><summary><code>client.status.<a href="/src/api/resources/status/client.rs">check</a>() -> Result&lt;CheckStatusResponse, ApiError&gt;</code></summary>
 <dl>

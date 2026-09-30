@@ -9,6 +9,7 @@
 //! - **Locations**
 //! - **Posters**
 //! - **Rewards**
+//! - **Webhook Subscriptions**
 //! - **Status**
 
 use crate::{ApiError, ClientConfig};
@@ -21,6 +22,7 @@ pub mod posters;
 pub mod rewards;
 pub mod status;
 pub mod stores;
+pub mod webhook_subscriptions;
 pub struct LealClient {
     pub config: ClientConfig,
     pub stores: StoresClient,
@@ -30,6 +32,7 @@ pub struct LealClient {
     pub locations: LocationsClient,
     pub posters: PostersClient,
     pub rewards: RewardsClient,
+    pub webhook_subscriptions: WebhookSubscriptionsClient,
     pub status: StatusClient,
 }
 
@@ -44,6 +47,7 @@ impl LealClient {
             locations: LocationsClient::new(config.clone())?,
             posters: PostersClient::new(config.clone())?,
             rewards: RewardsClient::new(config.clone())?,
+            webhook_subscriptions: WebhookSubscriptionsClient::new(config.clone())?,
             status: StatusClient::new(config.clone())?,
         })
     }
@@ -57,3 +61,4 @@ pub use posters::PostersClient;
 pub use rewards::RewardsClient;
 pub use status::StatusClient;
 pub use stores::StoresClient;
+pub use webhook_subscriptions::WebhookSubscriptionsClient;
