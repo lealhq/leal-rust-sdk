@@ -30,6 +30,9 @@ pub struct ListCustomerCardsResponseItem {
     #[serde(default)]
     #[serde(with = "crate::core::number_serializers")]
     pub progress_percentage: f64,
+    /// The customer's invite link while the card has referrals on (null otherwise). Safe to share: it names the customer as referrer and can't be used to stamp or redeem
+    #[serde(default)]
+    pub referral_url: String,
     /// Stamps collected so far
     #[serde(default)]
     pub stamps_count: i64,
@@ -42,7 +45,7 @@ pub struct ListCustomerCardsResponseItem {
     /// ISO 8601 last-update timestamp
     #[serde(default)]
     pub updated_at: String,
-    /// Public identifier used in wallet pass URLs
+    /// The card code: what the store scanner reads from the wallet pass QR and what staff can type in. Treat it like a membership number; it can be used to stamp and redeem
     #[serde(default)]
     pub uuid: String,
 }
@@ -65,6 +68,7 @@ pub struct ListCustomerCardsResponseItemBuilder {
     issued_at: Option<String>,
     pass_installed: Option<bool>,
     progress_percentage: Option<f64>,
+    referral_url: Option<String>,
     stamps_count: Option<i64>,
     stamps_remaining: Option<i64>,
     status: Option<String>,
@@ -118,6 +122,11 @@ impl ListCustomerCardsResponseItemBuilder {
         self
     }
 
+    pub fn referral_url(mut self, value: impl Into<String>) -> Self {
+        self.referral_url = Some(value.into());
+        self
+    }
+
     pub fn stamps_count(mut self, value: i64) -> Self {
         self.stamps_count = Some(value);
         self
@@ -154,6 +163,7 @@ impl ListCustomerCardsResponseItemBuilder {
     /// - [`issued_at`](ListCustomerCardsResponseItemBuilder::issued_at)
     /// - [`pass_installed`](ListCustomerCardsResponseItemBuilder::pass_installed)
     /// - [`progress_percentage`](ListCustomerCardsResponseItemBuilder::progress_percentage)
+    /// - [`referral_url`](ListCustomerCardsResponseItemBuilder::referral_url)
     /// - [`stamps_count`](ListCustomerCardsResponseItemBuilder::stamps_count)
     /// - [`stamps_remaining`](ListCustomerCardsResponseItemBuilder::stamps_remaining)
     /// - [`status`](ListCustomerCardsResponseItemBuilder::status)
@@ -186,6 +196,9 @@ impl ListCustomerCardsResponseItemBuilder {
             progress_percentage: self
                 .progress_percentage
                 .ok_or_else(|| BuildError::missing_field("progress_percentage"))?,
+            referral_url: self
+                .referral_url
+                .ok_or_else(|| BuildError::missing_field("referral_url"))?,
             stamps_count: self
                 .stamps_count
                 .ok_or_else(|| BuildError::missing_field("stamps_count"))?,

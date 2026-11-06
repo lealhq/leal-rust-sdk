@@ -32,6 +32,20 @@ pub struct GetCardsResponse {
     /// Card name (e.g. 'Coffee Loyalty Card')
     #[serde(default)]
     pub name: String,
+    /// What the wallet pass QR holds: 'link' (the customer's invite link with the card code after the #, readable by the Leal scanner and by `search`) or 'code' (the bare card code). Cards created before referrals use 'code'
+    #[serde(default)]
+    pub qr_style: String,
+    /// Stamps the invited friend gets when the referral pays out
+    #[serde(default)]
+    #[serde(with = "crate::core::number_serializers")]
+    pub referee_stamps: f64,
+    /// Whether customers can invite friends from the back of their pass. A referral pays out when the store first stamps the friend's card for a visit (a scan, or the API/POS), never for signing up
+    #[serde(default)]
+    pub referrals_enabled: bool,
+    /// Stamps the inviting customer gets when the referral pays out
+    #[serde(default)]
+    #[serde(with = "crate::core::number_serializers")]
+    pub referrer_stamps: f64,
     /// Number of rewards defined for this card
     #[serde(default)]
     pub rewards_count: i64,
@@ -93,6 +107,10 @@ pub struct GetCardsResponseBuilder {
     id: Option<i64>,
     initial_stamps: Option<i64>,
     name: Option<String>,
+    qr_style: Option<String>,
+    referee_stamps: Option<f64>,
+    referrals_enabled: Option<bool>,
+    referrer_stamps: Option<f64>,
     rewards_count: Option<i64>,
     show_member_field: Option<bool>,
     show_stamps_to_reward_field: Option<bool>,
@@ -156,6 +174,26 @@ impl GetCardsResponseBuilder {
 
     pub fn name(mut self, value: impl Into<String>) -> Self {
         self.name = Some(value.into());
+        self
+    }
+
+    pub fn qr_style(mut self, value: impl Into<String>) -> Self {
+        self.qr_style = Some(value.into());
+        self
+    }
+
+    pub fn referee_stamps(mut self, value: f64) -> Self {
+        self.referee_stamps = Some(value);
+        self
+    }
+
+    pub fn referrals_enabled(mut self, value: bool) -> Self {
+        self.referrals_enabled = Some(value);
+        self
+    }
+
+    pub fn referrer_stamps(mut self, value: f64) -> Self {
+        self.referrer_stamps = Some(value);
         self
     }
 
@@ -236,6 +274,10 @@ impl GetCardsResponseBuilder {
     /// - [`id`](GetCardsResponseBuilder::id)
     /// - [`initial_stamps`](GetCardsResponseBuilder::initial_stamps)
     /// - [`name`](GetCardsResponseBuilder::name)
+    /// - [`qr_style`](GetCardsResponseBuilder::qr_style)
+    /// - [`referee_stamps`](GetCardsResponseBuilder::referee_stamps)
+    /// - [`referrals_enabled`](GetCardsResponseBuilder::referrals_enabled)
+    /// - [`referrer_stamps`](GetCardsResponseBuilder::referrer_stamps)
     /// - [`rewards_count`](GetCardsResponseBuilder::rewards_count)
     /// - [`show_member_field`](GetCardsResponseBuilder::show_member_field)
     /// - [`show_stamps_to_reward_field`](GetCardsResponseBuilder::show_stamps_to_reward_field)
@@ -277,6 +319,18 @@ impl GetCardsResponseBuilder {
                 .initial_stamps
                 .ok_or_else(|| BuildError::missing_field("initial_stamps"))?,
             name: self.name.ok_or_else(|| BuildError::missing_field("name"))?,
+            qr_style: self
+                .qr_style
+                .ok_or_else(|| BuildError::missing_field("qr_style"))?,
+            referee_stamps: self
+                .referee_stamps
+                .ok_or_else(|| BuildError::missing_field("referee_stamps"))?,
+            referrals_enabled: self
+                .referrals_enabled
+                .ok_or_else(|| BuildError::missing_field("referrals_enabled"))?,
+            referrer_stamps: self
+                .referrer_stamps
+                .ok_or_else(|| BuildError::missing_field("referrer_stamps"))?,
             rewards_count: self
                 .rewards_count
                 .ok_or_else(|| BuildError::missing_field("rewards_count"))?,

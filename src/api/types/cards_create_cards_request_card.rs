@@ -20,6 +20,22 @@ pub struct CreateCardsRequestCard {
     /// Card name (e.g. 'Coffee Loyalty Card')
     #[serde(default)]
     pub name: String,
+    /// What the wallet pass QR holds. Defaults to 'link' for new cards
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub qr_style: Option<CreateCardsRequestCardQrStyle>,
+    /// Stamps the invited friend gets on their first stamped visit (>= 0 and < stamps_required, default 1)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
+    #[serde(with = "crate::core::number_serializers::option")]
+    pub referee_stamps: Option<f64>,
+    /// Let customers invite friends from the back of their pass (default false)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub referrals_enabled: Option<bool>,
+    /// Stamps the inviting customer gets when the friend's first visit is stamped (>= 0 and < stamps_required, default 1)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
+    #[serde(with = "crate::core::number_serializers::option")]
+    pub referrer_stamps: Option<f64>,
     /// Whether wallet passes show the member name field
     #[serde(skip_serializing_if = "Option::is_none")]
     pub show_member_field: Option<bool>,
@@ -72,6 +88,10 @@ pub struct CreateCardsRequestCardBuilder {
     header_text: Option<String>,
     initial_stamps: Option<i64>,
     name: Option<String>,
+    qr_style: Option<CreateCardsRequestCardQrStyle>,
+    referee_stamps: Option<f64>,
+    referrals_enabled: Option<bool>,
+    referrer_stamps: Option<f64>,
     show_member_field: Option<bool>,
     show_stamps_to_reward_field: Option<bool>,
     stamp_background_color: Option<String>,
@@ -113,6 +133,26 @@ impl CreateCardsRequestCardBuilder {
 
     pub fn name(mut self, value: impl Into<String>) -> Self {
         self.name = Some(value.into());
+        self
+    }
+
+    pub fn qr_style(mut self, value: CreateCardsRequestCardQrStyle) -> Self {
+        self.qr_style = Some(value);
+        self
+    }
+
+    pub fn referee_stamps(mut self, value: f64) -> Self {
+        self.referee_stamps = Some(value);
+        self
+    }
+
+    pub fn referrals_enabled(mut self, value: bool) -> Self {
+        self.referrals_enabled = Some(value);
+        self
+    }
+
+    pub fn referrer_stamps(mut self, value: f64) -> Self {
+        self.referrer_stamps = Some(value);
         self
     }
 
@@ -182,6 +222,10 @@ impl CreateCardsRequestCardBuilder {
             header_text: self.header_text,
             initial_stamps: self.initial_stamps,
             name: self.name.ok_or_else(|| BuildError::missing_field("name"))?,
+            qr_style: self.qr_style,
+            referee_stamps: self.referee_stamps,
+            referrals_enabled: self.referrals_enabled,
+            referrer_stamps: self.referrer_stamps,
             show_member_field: self.show_member_field,
             show_stamps_to_reward_field: self.show_stamps_to_reward_field,
             stamp_background_color: self.stamp_background_color,

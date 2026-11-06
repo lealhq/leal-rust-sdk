@@ -7,6 +7,9 @@ pub struct CreateCustomersRequest {
     pub card_id: Option<i64>,
     #[serde(default)]
     pub customer: CreateCustomersRequestCustomer,
+    /// Records the new customer as invited by another customer: the code is the last part of that customer's `referral_url`. Needs `card_id`, for the same card, with referrals on. Nothing is given now; both customers get their stamps when the new customer's card is first stamped for a visit
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub referral_code: Option<String>,
     /// When true, sends the card links to the customer via email/SMS after enrollment. Note: even without this flag, the response includes `apple_wallet_url` and `google_wallet_url` in each customer card object so you can deliver them yourself.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub send_card_links: Option<bool>,
@@ -23,6 +26,7 @@ impl CreateCustomersRequest {
 pub struct CreateCustomersRequestBuilder {
     card_id: Option<i64>,
     customer: Option<CreateCustomersRequestCustomer>,
+    referral_code: Option<String>,
     send_card_links: Option<bool>,
 }
 
@@ -34,6 +38,11 @@ impl CreateCustomersRequestBuilder {
 
     pub fn customer(mut self, value: CreateCustomersRequestCustomer) -> Self {
         self.customer = Some(value);
+        self
+    }
+
+    pub fn referral_code(mut self, value: impl Into<String>) -> Self {
+        self.referral_code = Some(value.into());
         self
     }
 
@@ -51,6 +60,7 @@ impl CreateCustomersRequestBuilder {
             customer: self
                 .customer
                 .ok_or_else(|| BuildError::missing_field("customer"))?,
+            referral_code: self.referral_code,
             send_card_links: self.send_card_links,
         })
     }

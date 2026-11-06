@@ -3,7 +3,7 @@ pub use crate::prelude::*;
 /// Query parameters for list
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct CustomersListQueryRequest {
-    /// Search query to filter customers by name, email, phone, card code (barcode), or external reference ID
+    /// Search query to filter customers by name, email, phone, card code (barcode, or the full scanned QR text), or external reference ID
     #[serde(skip_serializing_if = "Option::is_none")]
     pub search: Option<String>,
     /// External system slug (e.g. `square`, `shopify`). When combined with `external_id`, performs an exact lookup.
