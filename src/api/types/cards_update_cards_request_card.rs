@@ -2,6 +2,9 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct UpdateCardsRequestCard {
+    /// Apple Wallet layout. 'poster' is iOS 27's full-bleed layout; older iPhones show the store card. Defaults to 'store_card'
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub apple_pass_style: Option<UpdateCardsRequestCardApplePassStyle>,
     /// Up to two extra front-of-pass fields. Blank values are ignored.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub auxiliary_fields: Option<Vec<String>>,
@@ -11,6 +14,12 @@ pub struct UpdateCardsRequestCard {
     /// Card expiry timestamp (ISO 8601)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<String>,
+    /// Up to two buttons, shown as Featured Actions under the iOS 27 poster and as links in Google Wallet. Send an empty array to remove them.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub featured_actions: Option<Vec<String>>,
+    /// How the logo sits on Google Wallet. Defaults to 'round'
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_logo_style: Option<UpdateCardsRequestCardGoogleLogoStyle>,
     /// Optional header text displayed on the card
     #[serde(skip_serializing_if = "Option::is_none")]
     pub header_text: Option<String>,
@@ -82,9 +91,12 @@ impl UpdateCardsRequestCard {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct UpdateCardsRequestCardBuilder {
+    apple_pass_style: Option<UpdateCardsRequestCardApplePassStyle>,
     auxiliary_fields: Option<Vec<String>>,
     card_color: Option<String>,
     expires_at: Option<String>,
+    featured_actions: Option<Vec<String>>,
+    google_logo_style: Option<UpdateCardsRequestCardGoogleLogoStyle>,
     header_text: Option<String>,
     initial_stamps: Option<i64>,
     name: Option<String>,
@@ -106,6 +118,11 @@ pub struct UpdateCardsRequestCardBuilder {
 }
 
 impl UpdateCardsRequestCardBuilder {
+    pub fn apple_pass_style(mut self, value: UpdateCardsRequestCardApplePassStyle) -> Self {
+        self.apple_pass_style = Some(value);
+        self
+    }
+
     pub fn auxiliary_fields(mut self, value: Vec<String>) -> Self {
         self.auxiliary_fields = Some(value);
         self
@@ -118,6 +135,16 @@ impl UpdateCardsRequestCardBuilder {
 
     pub fn expires_at(mut self, value: impl Into<String>) -> Self {
         self.expires_at = Some(value.into());
+        self
+    }
+
+    pub fn featured_actions(mut self, value: Vec<String>) -> Self {
+        self.featured_actions = Some(value);
+        self
+    }
+
+    pub fn google_logo_style(mut self, value: UpdateCardsRequestCardGoogleLogoStyle) -> Self {
+        self.google_logo_style = Some(value);
         self
     }
 
@@ -214,9 +241,12 @@ impl UpdateCardsRequestCardBuilder {
     /// Consumes the builder and constructs a [`UpdateCardsRequestCard`].
     pub fn build(self) -> Result<UpdateCardsRequestCard, BuildError> {
         Ok(UpdateCardsRequestCard {
+            apple_pass_style: self.apple_pass_style,
             auxiliary_fields: self.auxiliary_fields,
             card_color: self.card_color,
             expires_at: self.expires_at,
+            featured_actions: self.featured_actions,
+            google_logo_style: self.google_logo_style,
             header_text: self.header_text,
             initial_stamps: self.initial_stamps,
             name: self.name,

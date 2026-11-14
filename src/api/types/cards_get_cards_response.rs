@@ -2,6 +2,9 @@ pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct GetCardsResponse {
+    /// Apple Wallet layout: 'store_card' (the classic layout) or 'poster' (iOS 27 full-bleed artwork; iPhones on iOS 26 or earlier show the store card)
+    #[serde(default)]
+    pub apple_pass_style: String,
     /// ISO 8601 timestamp when the card was archived, or null if active
     #[serde(default)]
     pub archived_at: String,
@@ -20,6 +23,14 @@ pub struct GetCardsResponse {
     /// ISO 8601 timestamp when the card expires, or null if it does not expire
     #[serde(default)]
     pub expires_at: String,
+    /// Up to two buttons: Featured Actions under the iOS 27 poster, and links under the pass in Google Wallet
+    #[serde(default)]
+    pub featured_actions: Vec<String>,
+    /// How the logo sits on Google Wallet: 'round' (the square icon in a circle, with the store name) or 'wide' (the logo in place of the circle and store name)
+    #[serde(default)]
+    pub google_logo_style: String,
+    #[serde(default)]
+    pub google_wallet: GetCardsResponseGoogleWallet,
     /// Optional header text displayed on the card
     #[serde(default)]
     pub header_text: String,
@@ -97,12 +108,16 @@ impl GetCardsResponse {
 #[derive(Clone, PartialEq, Default, Debug)]
 #[non_exhaustive]
 pub struct GetCardsResponseBuilder {
+    apple_pass_style: Option<String>,
     archived_at: Option<String>,
     auxiliary_fields: Option<Vec<String>>,
     card_color: Option<String>,
     created_at: Option<String>,
     customer_cards_count: Option<i64>,
     expires_at: Option<String>,
+    featured_actions: Option<Vec<String>>,
+    google_logo_style: Option<String>,
+    google_wallet: Option<GetCardsResponseGoogleWallet>,
     header_text: Option<String>,
     id: Option<i64>,
     initial_stamps: Option<i64>,
@@ -127,6 +142,11 @@ pub struct GetCardsResponseBuilder {
 }
 
 impl GetCardsResponseBuilder {
+    pub fn apple_pass_style(mut self, value: impl Into<String>) -> Self {
+        self.apple_pass_style = Some(value.into());
+        self
+    }
+
     pub fn archived_at(mut self, value: impl Into<String>) -> Self {
         self.archived_at = Some(value.into());
         self
@@ -154,6 +174,21 @@ impl GetCardsResponseBuilder {
 
     pub fn expires_at(mut self, value: impl Into<String>) -> Self {
         self.expires_at = Some(value.into());
+        self
+    }
+
+    pub fn featured_actions(mut self, value: Vec<String>) -> Self {
+        self.featured_actions = Some(value);
+        self
+    }
+
+    pub fn google_logo_style(mut self, value: impl Into<String>) -> Self {
+        self.google_logo_style = Some(value.into());
+        self
+    }
+
+    pub fn google_wallet(mut self, value: GetCardsResponseGoogleWallet) -> Self {
+        self.google_wallet = Some(value);
         self
     }
 
@@ -264,12 +299,16 @@ impl GetCardsResponseBuilder {
 
     /// Consumes the builder and constructs a [`GetCardsResponse`].
     /// This method will fail if any of the following fields are not set:
+    /// - [`apple_pass_style`](GetCardsResponseBuilder::apple_pass_style)
     /// - [`archived_at`](GetCardsResponseBuilder::archived_at)
     /// - [`auxiliary_fields`](GetCardsResponseBuilder::auxiliary_fields)
     /// - [`card_color`](GetCardsResponseBuilder::card_color)
     /// - [`created_at`](GetCardsResponseBuilder::created_at)
     /// - [`customer_cards_count`](GetCardsResponseBuilder::customer_cards_count)
     /// - [`expires_at`](GetCardsResponseBuilder::expires_at)
+    /// - [`featured_actions`](GetCardsResponseBuilder::featured_actions)
+    /// - [`google_logo_style`](GetCardsResponseBuilder::google_logo_style)
+    /// - [`google_wallet`](GetCardsResponseBuilder::google_wallet)
     /// - [`header_text`](GetCardsResponseBuilder::header_text)
     /// - [`id`](GetCardsResponseBuilder::id)
     /// - [`initial_stamps`](GetCardsResponseBuilder::initial_stamps)
@@ -293,6 +332,9 @@ impl GetCardsResponseBuilder {
     /// - [`updated_at`](GetCardsResponseBuilder::updated_at)
     pub fn build(self) -> Result<GetCardsResponse, BuildError> {
         Ok(GetCardsResponse {
+            apple_pass_style: self
+                .apple_pass_style
+                .ok_or_else(|| BuildError::missing_field("apple_pass_style"))?,
             archived_at: self
                 .archived_at
                 .ok_or_else(|| BuildError::missing_field("archived_at"))?,
@@ -311,6 +353,15 @@ impl GetCardsResponseBuilder {
             expires_at: self
                 .expires_at
                 .ok_or_else(|| BuildError::missing_field("expires_at"))?,
+            featured_actions: self
+                .featured_actions
+                .ok_or_else(|| BuildError::missing_field("featured_actions"))?,
+            google_logo_style: self
+                .google_logo_style
+                .ok_or_else(|| BuildError::missing_field("google_logo_style"))?,
+            google_wallet: self
+                .google_wallet
+                .ok_or_else(|| BuildError::missing_field("google_wallet"))?,
             header_text: self
                 .header_text
                 .ok_or_else(|| BuildError::missing_field("header_text"))?,
